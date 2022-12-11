@@ -4,12 +4,12 @@ disable_existing_loggers: false
 loggers:
   '':
     level: WARNING
-    handlers: ["console_handler", "file_handler"]
+    handlers: ["console_handler"]
 
 handlers:
   console_handler:
     class: logging.StreamHandler
-    formatter: console
+    formatter: default
 
 formatters:
   default:

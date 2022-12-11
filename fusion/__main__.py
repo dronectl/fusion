@@ -1,12 +1,12 @@
+import os
 import logging
-from fusion.logger.config import load_logging_config, configure_logger
+from fusion.config import Environment as env
+from fusion.logger.config import configure_logger
 
-
-# load logging config
-log_config = load_logging_config(False)
-
+# load dev state
+runtime = env.PROD if os.environ.get('FUSION_DEV') else env.DEV
 # configure logger
-configure_logger(log_config)
+configure_logger(runtime)
 
 logging.basicConfig(level=logging.DEBUG)
 _logger = logging.getLogger(__name__)
