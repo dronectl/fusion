@@ -1,17 +1,27 @@
+# -*- coding: utf-8 -*-
+"""
+Logging Configuration Helpers
+=============================
+
+Copyright © 2022 dronectl. All rights reserved.
+"""
+
+import yaml
 import logging.config
-from typing import Dict
-from enum import Enum
+
+from pathlib import Path
+from fusion.config import Environment
 
 
-def load_logging_config(prod: bool) -> Dict[str, str]:
+def configure_logger(runtime: Environment) -> None:
     """
-    Load config from yaml config file and translate it to a dictionary
-    """
-    ...
+    Configure python logger from runtime environment
 
-
-def configure_logger(config: Dict[str, str]) -> None:
+    :param runtime: prod or dev runtime enum
+    :type runtime: Environment
     """
-    Configure python logger with dict config
-    """
-    ...
+    logging_conf_path = Path(__file__).parent.joinpath(f'config/{runtime.value}.yaml').resolve()
+    # load dict from path stream
+    log_conf = yaml.safe_load(logging_conf_path.read_text())
+    # configure logger
+    logging.config.dictConfig(log_conf)
