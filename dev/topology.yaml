@@ -1,0 +1,33 @@
+topology:
+    host:
+        type: RPI
+        links:
+          - type: socket
+            direction: r/w
+          - type: http
+            direction: r/w
+        devices:
+          - type: Raptor
+            links:
+              - type: socket
+                direction: r/w
+              devices:
+                - type: ESC
+                  devices:
+                  links:
+                    - type: uart
+                      direction: r/w
+                - type: KD44544
+                  devices:
+                  links:
+                    - type: i2c 
+                      direction: r/w
+                - type: PD
+                  devices:
+                  links:
+                    - type: gpio 
+                      direction: w
+                - type: SD
+                  links:
+                    - type: spi 
+                      direction: r/w
