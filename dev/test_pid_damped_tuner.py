@@ -2,9 +2,9 @@
 
 
 from enum import Enum
-from typing import Dict
+from typing import Dict, TypeVar
 
-
+from fusion.core.registry import Registry
 
 """
 topology:
@@ -43,6 +43,16 @@ topology:
                               direction: r/w
 """
 
+_T = TypeVar('_T')
+
+class ESCCommands(Enum):
+    SLEEP = 0x45
+    ARM = 0x34
+    WAKE = 0x67
+
+class Command:
+    pass
+
 class InterfaceType(Enum):
 
     SOCKET = "socket"
@@ -58,6 +68,12 @@ class Interface:
     def __init__(self, address:str) -> None:
         self.address = address
 
+    def __enter__(self):
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        return
+
     @property
     def address(self) -> str:
         return self.__address
@@ -66,30 +82,43 @@ class Interface:
     def address(self, address: str) -> None:
         self.__address = address
 
+    def connect(self):
+        ...
+    
+    def disconnect(self):
+        ...
+    
+    def write(self, bytes:bytes):
+        ...
+
+class Socket(Interface):
+    ...
+
 class Device:
-    def __init__(self, interfaces: Dict[InterfaceType, Interface], devices: Dict[DeviceType, 'Device']={}) -> None:
+    def __init__(self, interfaces: Registry[Interface]) -> None:
         self.interfaces = interfaces
-        self.devices = devices
 
     @property
-    def interfaces(self) -> Dict[InterfaceType, Interface]:
+    def interfaces(self) -> Registry[Interface]:
         return self.__interfaces
 
     @interfaces.setter
-    def interfaces(self, interfaces: Dict[InterfaceType, Interface]) -> None:
+    def interfaces(self, interfaces: Registry[Interface]) -> None:
         self.__interfaces = interfaces
 
 
 class Raptor(Device):
-    def __init__(self, interfaces: Dict[InterfaceType, Interface]) -> None:
+    def __init__(self, interfaces: Registry[Interface]) -> None:
         super().__init__(interfaces)
 
     def connect(self) -> None:
         raise NotImplementedError
-
+    
+    def send(self, command: Command) -> None:
+        ...
 
 class ESC(Device):
-    def __init__(self, interfaces: Dict[InterfaceType, Interface]) -> None:
+    def __init__(self, interfaces: Registry[Interface]) -> None:
         super().__init__(interfaces)
 
     def arm(self) -> None:
@@ -97,45 +126,37 @@ class ESC(Device):
 
 class Topology:
 
-    def __init__(self, devices: Dict[DeviceType, Device]) -> None:
-        self.devices = devices 
+    def __init__(self, devices: Registry[Device]) -> None:
+        self.devices = devices
 
     @property
-    def interfaces(self) -> Dict[InterfaceType, Interface]:
-        return self.__interfaces
-
-    @interfaces.setter
-    def interfaces(self, interfaces: Dict[InterfaceType, Interface]) -> None:
-        self.__interfaces = interfaces
-
-    @property
-    def devices(self) -> Dict[DeviceType, Device]:
+    def devices(self) -> Registry[Device]:
         return self.__devices
 
     @devices.setter
-    def devices(self, devices: Dict[DeviceType, Device]) -> None:
+    def devices(self, devices: Registry[Device]) -> None:
         self.__devices = devices
 
     def provision(self) -> None:
         raise NotImplementedError
 
 
+def construct_link(host:Device, target:Device, interface: _T) -> _T:
+    ...
+
 class PIDDampedTuner:
 
     def __init__(self) -> None:
         # build topology required for test setup
-        self.topology = Topology(
-            devices={
-                DeviceType.RAPTOR: Raptor(
-                    interfaces={
-                        InterfaceType.SOCKET: Interface("10.2.3.4:5025")
-                    }
-                ),
-                DeviceType.ESC: ESC(
-
-                ) 
-            }
-        )
+        self.topology = Topology()
         self.topology.provision()
 
-    def 
+    def test_dampener(self) -> None:
+        """
+        """
+        raptor = self.topology.devices.get(Raptor)
+        with raptor.interfaces.get(Socket) as socket:
+            socket.write(b"send arm command to esc")
+        # instruct raptor to send arm command to ESC
+        # raptor is assumed to run fusion server interpreter
+        raptor.devices.get(DeviceType.ESC).send(ESCCommands.WAKE)
