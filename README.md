@@ -1,4 +1,7 @@
-# Fusion
-Hardware-in-the-loop test framework
+# Fusion API
+
+Modified: 2022-12
+
+Hardware-in-the-loop infrastructure api.
 
 
