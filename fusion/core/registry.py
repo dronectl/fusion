@@ -8,31 +8,50 @@ Registries are custom object containers
 Copyright © 2022 dronectl. All rights reserved.
 """
 
-from typing import Generator, Generic, Type, TypeVar
+from fusion.core.device import Device
+from fusion.core.interface import Interface
 
-_R = TypeVar('_R')
-_T = TypeVar('_T')
+from typing import List, Dict, Generator, Generic, Type, TypeVar
+
+_R = TypeVar('_R', Device, Interface)
 
 class Registry(Generic[_R]):
 
-    def __init__(self, *args) -> None:
-        self.entries = set(args)
+    """
+    {
+        Raptor: [
+            Raptor("rpt-123"),
+            Raptor("rpt-159")
+        ],
+        ESC: [
+            ESC("esc-234")
+        ]
+    }
+    raptor: Raptor = devices.get(Raptor, "rpt-123")
+    esc: ESC = devices.get(ESC, "esc-234")
+    """
 
-    def __iter__(self) -> Generator[_R, None, None]:
+    def __init__(self, items:Dict[Type[_R], List[_R]]) -> None:
+        self.entries = items
+
+    def __iter__(self) -> Generator[Type[_R], None, None]:
         for x in self.entries:
             yield x
 
-    def get(self, entry: Type[_T]) -> _T:
+    def get(self, _type: Type[_R], idn: str) -> _R:
         """
-        Get entry in registry of type
+        Get target entry in registry
 
-        :param entry: type of entry
+        :param _type: type subset of entry
         :type entry: Type[_T]
-        :raises ValueError: _description_
-        :return: _description_
+        :raises ValueError: if subset or target is not found in registry
+        :return: target entry in subset
         :rtype: _T
         """
-        for e in self.entries:
-            if type(e) == entry:
-                return e
-        raise ValueError(f"Entry of type {entry} is not found in registry")
+        subset = self.entries.get(_type)
+        if subset is None:
+            raise ValueError(f"Entry of type {_type} is not found in registry")
+        for target in subset:
+            if target.idn == idn:
+                return target
+        raise ValueError(f"Entry with idn: {idn} not found in subset {_type}")

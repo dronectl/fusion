@@ -1,0 +1,3 @@
+
+class TopologyError(Exception):
+    pass
