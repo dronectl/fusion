@@ -14,3 +14,5 @@ class Environment(Enum):
     """
     DEV="dev"
     PROD="prod"
+
+TOPOLOGY_CONF = ""
