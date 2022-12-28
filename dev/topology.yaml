@@ -1,33 +1,26 @@
 topology:
-    host:
-        type: RPI
-        links:
-          - type: socket
-            direction: r/w
-          - type: http
-            direction: r/w
-        devices:
-          - type: Raptor
-            links:
-              - type: socket
-                direction: r/w
-              devices:
-                - type: ESC
-                  devices:
-                  links:
-                    - type: uart
-                      direction: r/w
-                - type: KD44544
-                  devices:
-                  links:
-                    - type: i2c 
-                      direction: r/w
-                - type: PD
-                  devices:
-                  links:
-                    - type: gpio 
-                      direction: w
-                - type: SD
-                  links:
-                    - type: spi 
-                      direction: r/w
+  devices:
+    # esc motor and propulsion test jig
+    - type: Raptor # qualname of class (must be an exact match)
+      idn: rpt-102 # idn for registry storage ident and tagging
+      hw_version: 1.2.4-alpha
+      fw_version: 3.4.5
+      tags:
+        - prop:5x4.5x3
+        - motor:1000kv
+      # communication channels to device
+      interfaces:
+        - type: SCPI
+          idn: scpi-0
+          address: 192.168.2.34
+          port: 3000
+        - type: Stream
+          idn: str-0
+          address: 192.168.2.34
+          port: 3100
+          format: t1
+      # supported subsystem control interfaces
+      capabilities:
+        - esc
+        - system
+        - stream
