@@ -8,6 +8,7 @@ Copyright © 2022 dronectl. All rights reserved.
 
 import abc
 
+
 class Payload:
 
     def __init__(self, psize: int) -> None:
@@ -16,13 +17,13 @@ class Payload:
     @property
     def psize(self) -> int:
         return self.__psize
-    
+
     @psize.setter
-    def psize(self, payload_size:int) -> None:
+    def psize(self, payload_size: int) -> None:
         self.__psize = payload_size
 
     @abc.abstractmethod
-    def unpack(self, raw:bytes):
+    def unpack(self, raw: bytes):
         """
         Unpack the byte struct and save to properties.
 
@@ -30,7 +31,7 @@ class Payload:
         :type raw: bytes
         """
         raise NotImplementedError
-    
+
     @abc.abstractmethod
     def pack(self) -> bytes:
         """

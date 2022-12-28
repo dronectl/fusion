@@ -6,6 +6,7 @@ Propeller
 Copyright © 2022 dronectl. All rights reserved.
 """
 
+
 class Propeller:
 
     @property
@@ -17,7 +18,7 @@ class Propeller:
         :rtype: float
         """
         return self.__pitch
-    
+
     @pitch.setter
     def pitch(self, pitch: float) -> None:
         """
@@ -27,7 +28,7 @@ class Propeller:
         :rtype: float
         """
         self.__pitch = pitch
-  
+
     @property
     def blades(self) -> int:
         """
@@ -37,7 +38,7 @@ class Propeller:
         :rtype: int
         """
         return self.__blades
-    
+
     @blades.setter
     def blades(self, blades: int) -> None:
         """

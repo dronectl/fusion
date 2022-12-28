@@ -6,7 +6,6 @@ Fusion Core - Topology
 Copyright © 2022 dronectl. All rights reserved.
 """
 
-import sys
 from typing import List
 from pathlib import Path
 
@@ -22,5 +21,4 @@ class Topology:
         for device in devices:
             qualname = device.get("type")
             if qualname is None:
-                raise TopologyError(f"Device must define a type.")
-
+                raise TopologyError("Device must define a type.")

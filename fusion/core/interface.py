@@ -9,9 +9,10 @@ Copyright © 2022 dronectl. All rights reserved.
 
 import abc
 
+
 class Interface:
 
-    def __init__(self, idn:str) -> None:
+    def __init__(self, idn: str) -> None:
         self.idn = idn
 
     @property

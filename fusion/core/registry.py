@@ -15,6 +15,7 @@ from typing import List, Dict, Generator, Generic, Type, TypeVar
 
 _R = TypeVar('_R', Device, Interface)
 
+
 class Registry(Generic[_R]):
 
     """
@@ -31,7 +32,7 @@ class Registry(Generic[_R]):
     esc: ESC = devices.get(ESC, "esc-234")
     """
 
-    def __init__(self, items:Dict[Type[_R], List[_R]]) -> None:
+    def __init__(self, items: Dict[Type[_R], List[_R]]) -> None:
         self.entries = items
 
     def __iter__(self) -> Generator[Type[_R], None, None]:

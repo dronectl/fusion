@@ -10,9 +10,10 @@ Copyright © 2022 dronectl. All rights reserved.
 import abc
 from fusion.core.registry import Registry
 
+
 class Device:
 
-    def __init__(self, idn:str, hw_version:str, fw_version:str, interfaces: Registry) -> None:
+    def __init__(self, idn: str, hw_version: str, fw_version: str, interfaces: Registry) -> None:
         self.idn = idn
         self.hw_version = hw_version
         self.fw_version = fw_version
@@ -76,11 +77,11 @@ class Device:
         :type fw_version: str
         """
         self.__fw_version = fw_version
-    
+
     @property
     def interfaces(self) -> Registry:
         return self.__interfaces
-    
+
     @interfaces.setter
     def interfaces(self, interfaces: Registry) -> None:
         self.__interfaces = interfaces
@@ -98,4 +99,3 @@ class Device:
         Deprovision device. Disconnect all interfaces.
         """
         raise NotImplementedError
-
