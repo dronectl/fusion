@@ -3,15 +3,22 @@
 Fusion Core - Device
 ====================
 
+Fusion device abstract class
+
 Copyright © 2022 dronectl. All rights reserved.
 """
 
 
+import re
 import abc
+from fusion.core.interface import Interface
 from fusion.core.registry import Registry
 
 
-class Device:
+class Device(abc.ABC):
+
+    # semver regex
+    SEMVER_REGEX = re.compile(r"([0-9]+)\.([0-9]+)\.([0-9]+)")
 
     def __init__(self, idn: str, hw_version: str, fw_version: str, interfaces: Registry) -> None:
         self.idn = idn
@@ -56,6 +63,8 @@ class Device:
         :param hw_version: hardware version string
         :type hw_version: str
         """
+        if (self.SEMVER_REGEX.match(hw_version) is None):
+            raise ValueError(f"Hardware version {hw_version} fails semver regex check")
         self.__hw_version = hw_version
 
     @property
@@ -76,14 +85,28 @@ class Device:
         :param fw_version: _description_
         :type fw_version: str
         """
+        if (self.SEMVER_REGEX.match(fw_version) is None):
+            raise ValueError(f"Firmware version {fw_version} fails semver regex check")
         self.__fw_version = fw_version
 
     @property
-    def interfaces(self) -> Registry:
+    def interfaces(self) -> Registry[Interface]:
+        """
+        Device communication interface registry
+
+        :return: device communication interface registry
+        :rtype: Registry[Interface]
+        """
         return self.__interfaces
 
     @interfaces.setter
-    def interfaces(self, interfaces: Registry) -> None:
+    def interfaces(self, interfaces: Registry[Interface]) -> None:
+        """
+        Device communication interface registry
+
+        :param interfaces: device communication interface registry
+        :type interfaces: Registry[Interface]
+        """
         self.__interfaces = interfaces
 
     @abc.abstractmethod
