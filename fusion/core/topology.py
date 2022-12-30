@@ -11,7 +11,7 @@ Copyright © 2022 dronectl. All rights reserved.
 
 import logging
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict
 
 from fusion.core.device import Device
 from fusion.core.registry import Registry
@@ -25,6 +25,7 @@ class Topology:
 
     def __init__(self) -> None:
         self._logger = logging.getLogger(__name__)
+        self.name = ""
         self.devices = Registry({})
 
     @property
@@ -36,6 +37,26 @@ class Topology:
         :rtype: int
         """
         return self.devices.size
+
+    @property
+    def name(self) -> str:
+        """
+        Topology name
+
+        :return: topology name
+        :rtype: str
+        """
+        return self.__name
+
+    @name.setter
+    def name(self, name: str) -> None:
+        """
+        Topology name
+
+        :param name: topology name
+        :type name: str
+        """
+        self.__name = name
 
     @property
     def devices(self) -> Registry[Device]:
@@ -57,10 +78,14 @@ class Topology:
         """
         self.__devices = devices
 
-    def load(self, topology: Dict[str, List[Dict]]) -> None:
+    def load(self, topology: Dict[str, Any]) -> None:
         """
         Load and instantiate topology instances
         """
+        name = topology.get('name')
+        if name is None:
+            raise TopologyError("Topology must have a name")
+        self.name = name
         devices = topology.get('devices')
         if devices is None:
             raise TopologyError("Must specify at least 1 device in topology document.")

@@ -1,4 +1,6 @@
+---
 topology:
+  name: bench
   devices:
     # esc motor and propulsion test jig
     - type: Raptor # qualname of class (must be an exact match)
@@ -7,9 +9,9 @@ topology:
       fw_version: 0.1.0 # semver
       # communication channels are device specific
       interfaces:
-        - type: Socket
-          idn: "scpi"
+        - type: TCPSocket
+          idn: scpi
           target: 192.168.2.34:3000
-        - type: Socket
-          idn: "telemetry"
+        - type: TCPSocket
+          idn: telemetry
           target: 192.168.2.34:3010
