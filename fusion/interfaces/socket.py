@@ -18,3 +18,6 @@ class TCPSocket(Interface):
 
     def close(self) -> None:
         self.socket.close()
+
+    def write(self, _: str) -> None:
+        ...

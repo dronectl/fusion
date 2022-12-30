@@ -15,7 +15,7 @@ from fusion.core.interface import Interface
 from fusion.core.registry import Registry
 
 
-class Device(abc.ABC):
+class Device():
 
     # semver regex
     SEMVER_REGEX = re.compile(r"([0-9]+)\.([0-9]+)\.([0-9]+)")
