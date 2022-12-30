@@ -10,6 +10,26 @@ Copyright © 2022 dronectl. All rights reserved.
 class Propeller:
 
     @property
+    def mass(self) -> float:
+        """
+        Propeller mass (g)
+
+        :return: propeller mass (g)
+        :rtype: float
+        """
+        return self.__mass
+
+    @mass.setter
+    def mass(self, mass: float) -> None:
+        """
+        Propeller mass (g)
+
+        :return: propeller mass (g)
+        :rtype: float
+        """
+        self.__mass = mass
+
+    @property
     def pitch(self) -> float:
         """
         Propeller blade pitch (mm)
