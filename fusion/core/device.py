@@ -20,10 +20,11 @@ class Device(abc.ABC):
     # semver regex
     SEMVER_REGEX = re.compile(r"([0-9]+)\.([0-9]+)\.([0-9]+)")
 
-    def __init__(self, idn: str, hw_version: str, fw_version: str, interfaces: Registry) -> None:
+    def __init__(self, idn: str, hw_version: str, fw_version: str, interfaces: Registry[Interface]) -> None:
         self.idn = idn
         self.hw_version = hw_version
         self.fw_version = fw_version
+        self.interfaces = interfaces
 
     @property
     def idn(self) -> str:
