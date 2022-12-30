@@ -3,24 +3,13 @@ topology:
     # esc motor and propulsion test jig
     - type: Raptor # qualname of class (must be an exact match)
       idn: rpt-102 # idn for registry storage ident and tagging
-      hw_version: 1.2.4-alpha
-      fw_version: 3.4.5
-      tags:
-        - prop:5x4.5x3
-        - motor:1000kv
-      # communication channels to device
+      hw_version: 0.0.1 # semver
+      fw_version: 0.1.0 # semver
+      # communication channels are device specific
       interfaces:
-        - type: SCPI
-          idn: scpi-0
-          address: 192.168.2.34
-          port: 3000
-        - type: Stream
-          idn: str-0
-          address: 192.168.2.34
-          port: 3100
-          format: t1
-      # supported subsystem control interfaces
-      capabilities:
-        - esc
-        - system
-        - stream
+        - type: Socket
+          idn: "scpi"
+          target: 192.168.2.34:3000
+        - type: Socket
+          idn: "telemetry"
+          target: 192.168.2.34:3010
