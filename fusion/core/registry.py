@@ -39,13 +39,17 @@ class Registry(Generic[_R]):
         for x in self.entries:
             yield x
 
+    @property
+    def size(self) -> int:
+        return len(self.entries)
+
     def get(self, _type: Type[_R], idn: str) -> _R:
         """
         Get target entry in registry
 
         :param _type: type subset of entry
         :type entry: Type[_T]
-        :raises ValueError: if subset or target is not found in registry
+        :raises ValueError: if subset or target is not found
         :return: target entry in subset
         :rtype: _T
         """
