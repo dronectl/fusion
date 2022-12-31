@@ -12,10 +12,10 @@ Copyright © 2022 dronectl. All rights reserved.
 import re
 import abc
 from fusion.core.interface import Interface
-from fusion.core.registry import Registry
+from fusion.core.registry import Registry, RegistryElemMixin
 
 
-class Device():
+class Device(RegistryElemMixin):
 
     # semver regex
     SEMVER_REGEX = re.compile(r"([0-9]+)\.([0-9]+)\.([0-9]+)")
@@ -25,26 +25,6 @@ class Device():
         self.hw_version = hw_version
         self.fw_version = fw_version
         self.interfaces = interfaces
-
-    @property
-    def idn(self) -> str:
-        """
-        Device identification string
-
-        :return: device identification string
-        :rtype: str
-        """
-        return self.__idn
-
-    @idn.setter
-    def idn(self, idn: str) -> None:
-        """
-        Device identification string
-
-        :param idn: device identification string
-        :type idn: str
-        """
-        self.__idn = idn
 
     @property
     def hw_version(self) -> str:
