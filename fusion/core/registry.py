@@ -51,8 +51,18 @@ class Registry(Generic[_R]):
     esc: ESC = devices.get(ESC, "esc-234")
     """
 
-    def __init__(self, items: Dict[Type[_R], List[_R]]) -> None:
-        self.entries = items
+    def __init__(self, *args: _R) -> None:
+        # get all unique types
+        _types = set()
+        for arg in args:
+            _types.add(type(arg))
+        self.entries: Dict[Type[_R], List[_R]] = {}
+        # populate entries
+        for _type in _types: 
+            self.entries[_type] = list(filter(lambda x: type(x) == _type, args))
+
+    def __repr__(self) -> str:
+        return str(self.entries)
 
     def __iter__(self) -> Generator[Type[_R], None, None]:
         for x in self.entries:
