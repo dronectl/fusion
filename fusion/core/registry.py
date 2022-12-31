@@ -8,13 +8,32 @@ Registries are custom object containers
 Copyright © 2022 dronectl. All rights reserved.
 """
 
-from fusion.core.device import Device
-from fusion.core.interface import Interface
+from typing import List, Dict, Generator, Generic, Type, TypeVar, Union
 
-from typing import List, Dict, Generator, Generic, Type, TypeVar
+class RegistryElemMixin:
 
-_R = TypeVar('_R', Device, Interface)
+    @property
+    def idn(self) -> str:
+        """
+        Registry element identification string
 
+        :return: registry identification string
+        :rtype: str
+        """
+        return self.__idn
+
+    @idn.setter
+    def idn(self, idn: str) -> None:
+        """
+        Registry element identification string
+
+        :param idn: registry identification string
+        :type idn: str
+        """
+        self.__idn = idn
+
+_R = TypeVar('_R', bound=RegistryElemMixin)
+_T = TypeVar('_T', bound=_R) # type: ignore
 
 class Registry(Generic[_R]):
 
@@ -43,7 +62,7 @@ class Registry(Generic[_R]):
     def size(self) -> int:
         return len(self.entries)
 
-    def get(self, _type: Type[_R], idn: str) -> _R:
+    def get(self, _type: Type[_T], idn: str) -> _T:
         """
         Get target entry in registry
 
@@ -53,10 +72,10 @@ class Registry(Generic[_R]):
         :return: target entry in subset
         :rtype: _T
         """
-        subset = self.entries.get(_type)
+        subset = self.entries.get(_type) # type: ignore
         if subset is None:
             raise ValueError(f"Entry of type {_type} is not found in registry")
         for target in subset:
             if target.idn == idn:
-                return target
+                return target # type: ignore
         raise ValueError(f"Entry with idn: {idn} not found in subset {_type}")
