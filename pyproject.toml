@@ -23,3 +23,6 @@ show-source         =   1
 builtins            =   'self'
 count               =   1
 statistics          =   1
+
+[tool.autopep8]
+max_line_length = 120
