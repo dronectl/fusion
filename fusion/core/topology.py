@@ -9,10 +9,12 @@ scopes the test execution by provisioning based on the availablility of devices.
 Copyright © 2022 dronectl. All rights reserved.
 """
 
+import sys
 import logging
-from pathlib import Path
-from typing import Any, Dict
 
+from typing import Any, Dict, List
+from fusion.core.interface import Interface
+from fusion.core.utils import pformat
 from fusion.core.device import Device
 from fusion.core.registry import Registry
 from fusion.core.exceptions import TopologyError
@@ -20,13 +22,13 @@ from fusion.core.exceptions import TopologyError
 
 class Topology:
 
-    DEVICE_PATH = Path(__file__).parent.joinpath("devices").resolve()
-    INTERFACE_PATH = Path(__file__).parent.joinpath("interfaces").resolve()
+    DEVICE_PATH = 'fusion.devices'
+    INTERFACE_PATH = 'fusion.interfaces'
 
     def __init__(self) -> None:
         self._logger = logging.getLogger(__name__)
         self.name = ""
-        self.devices = Registry({})
+        self.devices = Registry()
 
     @property
     def nodes(self) -> int:
@@ -82,14 +84,44 @@ class Topology:
         """
         Load and instantiate topology instances
         """
-        name = topology.get('name')
+        topology_doc = topology.get('topology')
+        if topology_doc is None:
+            raise TopologyError("Topology document must begin with the `topology` key")
+        self._logger.info("Loading topology: %s", pformat(topology_doc))
+        name = topology_doc.get('name')
         if name is None:
             raise TopologyError("Topology must have a name")
         self.name = name
-        devices = topology.get('devices')
+        devices = topology_doc.get('devices')
         if devices is None:
             raise TopologyError("Must specify at least 1 device in topology document.")
+        # build device tree
+        device_objs:List[Device] = []
         for device in devices:
-            qualname = device.get("type")
-            if qualname is None:
+            # all keys except for type and interface relate 1-1 with device type
+            try:
+                d_qualname = device.pop('type')
+            except KeyError: 
+                raise TopologyError("Interface must define a type.")
+            if d_qualname is None:
                 raise TopologyError("Device must define a type.")
+            # build interfaces
+            try:
+                interfaces = device.pop('interfaces')
+            except KeyError: 
+                raise TopologyError("Interface must define a type.")
+            if interfaces is None:
+                raise TopologyError("Devices must define at least 1 interface.")
+            interface_objs:List[Interface] = []
+            for interface in interfaces:
+                # all keys except for type relate 1-1 with interface type
+                try:
+                    i_qualname = interface.pop('type')
+                except KeyError: 
+                    raise TopologyError("Interface must define a type.")
+                interface_cls = getattr(sys.modules[str(self.INTERFACE_PATH)], i_qualname)
+                interface_objs.append(interface_cls(**interface))
+            device_cls = getattr(sys.modules[str(self.DEVICE_PATH)], d_qualname)
+            device['interfaces'] = Registry(*interface_objs)
+            device_objs.append(device_cls(**device))
+        self.devices = Registry(*device_objs) 
