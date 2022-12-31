@@ -11,7 +11,7 @@ topology:
       interfaces:
         - type: TCPSocket
           idn: scpi
-          target: 192.168.2.34:3000
+          target: 127.0.0.1:3000
         - type: TCPSocket
           idn: telemetry
-          target: 192.168.2.34:3010
+          target: 127.0.0.1:3010
