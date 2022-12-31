@@ -8,7 +8,8 @@ Registries are custom object containers
 Copyright © 2022 dronectl. All rights reserved.
 """
 
-from typing import List, Dict, Generator, Generic, Type, TypeVar, Union
+from typing import List, Dict, Generator, Generic, Type, TypeVar
+
 
 class RegistryElemMixin:
 
@@ -32,8 +33,10 @@ class RegistryElemMixin:
         """
         self.__idn = idn
 
+
 _R = TypeVar('_R', bound=RegistryElemMixin)
-_T = TypeVar('_T', bound=_R) # type: ignore
+_T = TypeVar('_T', bound=_R)  # type: ignore
+
 
 class Registry(Generic[_R]):
 
@@ -58,7 +61,7 @@ class Registry(Generic[_R]):
             _types.add(type(arg))
         self.entries: Dict[Type[_R], List[_R]] = {}
         # populate entries
-        for _type in _types: 
+        for _type in _types:
             self.entries[_type] = list(filter(lambda x: type(x) == _type, args))
 
     def __repr__(self) -> str:
@@ -82,10 +85,10 @@ class Registry(Generic[_R]):
         :return: target entry in subset
         :rtype: _T
         """
-        subset = self.entries.get(_type) # type: ignore
+        subset = self.entries.get(_type)  # type: ignore
         if subset is None:
             raise ValueError(f"Entry of type {_type} is not found in registry")
         for target in subset:
             if target.idn == idn:
-                return target # type: ignore
+                return target  # type: ignore
         raise ValueError(f"Entry with idn: {idn} not found in subset {_type}")

@@ -11,8 +11,8 @@ Copyright © 2022 dronectl. All rights reserved.
 
 import sys
 import logging
-
 from typing import Any, Dict, List
+
 from fusion.core.interface import Interface
 from fusion.core.utils import pformat
 from fusion.core.device import Device
@@ -96,32 +96,32 @@ class Topology:
         if devices is None:
             raise TopologyError("Must specify at least 1 device in topology document.")
         # build device tree
-        device_objs:List[Device] = []
+        device_objs: List[Device] = []
         for device in devices:
             # all keys except for type and interface relate 1-1 with device type
             try:
                 d_qualname = device.pop('type')
-            except KeyError: 
+            except KeyError:
                 raise TopologyError("Interface must define a type.")
             if d_qualname is None:
                 raise TopologyError("Device must define a type.")
             # build interfaces
             try:
                 interfaces = device.pop('interfaces')
-            except KeyError: 
+            except KeyError:
                 raise TopologyError("Interface must define a type.")
             if interfaces is None:
                 raise TopologyError("Devices must define at least 1 interface.")
-            interface_objs:List[Interface] = []
+            interface_objs: List[Interface] = []
             for interface in interfaces:
                 # all keys except for type relate 1-1 with interface type
                 try:
                     i_qualname = interface.pop('type')
-                except KeyError: 
+                except KeyError:
                     raise TopologyError("Interface must define a type.")
                 interface_cls = getattr(sys.modules[str(self.INTERFACE_PATH)], i_qualname)
                 interface_objs.append(interface_cls(**interface))
             device_cls = getattr(sys.modules[str(self.DEVICE_PATH)], d_qualname)
             device['interfaces'] = Registry(*interface_objs)
             device_objs.append(device_cls(**device))
-        self.devices = Registry(*device_objs) 
+        self.devices = Registry(*device_objs)
