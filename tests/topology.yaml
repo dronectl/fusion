@@ -1,0 +1,17 @@
+---
+topology:
+  name: bench
+  devices:
+    # esc motor and propulsion test jig
+    - type: Raptor # qualname of class (must be an exact match)
+      idn: rpt-102 # idn for registry storage ident and tagging
+      hw_version: 0.0.1 # semver
+      fw_version: 0.1.0 # semver
+      # communication channels are device specific
+      interfaces:
+        - type: TCPSocket
+          idn: scpi
+          target: 127.0.0.1:3000
+        - type: TCPSocket
+          idn: telemetry
+          target: 127.0.0.1:3010

@@ -1,0 +1,28 @@
+[tool.flake8]
+exclude = [ '__pycache__', 'dev']
+ignore = [
+    # blank lines
+    'E3',
+    # multiple statements on a colon line (cleaner single line if branching)
+    'E701',
+    # multiple statements on a colon line
+    'E704',
+    # blank lint contains whitespace
+    'W293',
+    # visual indents
+    'E128',
+    # line break after binary operator
+    'W504',
+    # trailing whitespaces
+    'W291',
+    # bad practice: PEP 8 recommended style, which was changed on April 16th, 2016
+    'W503'
+]
+max-line-length     =   120
+show-source         =   1
+builtins            =   'self'
+count               =   1
+statistics          =   1
+
+[tool.autopep8]
+max_line_length = 120
